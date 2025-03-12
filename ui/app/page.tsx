@@ -1,8 +1,14 @@
 "use client";
 
-import { useCopilotAction } from "@copilotkit/react-core";
+import { useCoAgent, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
+
+// Define the agent state type, should match the actual state of your agent
+type AgentState = {
+  language: "english" | "spanish";
+}
+ 
 
 export default function Home() {
   return (
@@ -20,6 +26,11 @@ export default function Home() {
 }
 
 function YourMainContent() {
+  const { state } = useCoAgent<AgentState>({ 
+    name: "sample_agent",
+    initialState: { language: "spanish" }  // optionally provide an initial state
+  });
+
   const [backgroundColor, setBackgroundColor] = useState("#ADD8E6");
 
   // Render a greeting in the chat
@@ -66,6 +77,7 @@ function YourMainContent() {
       <h1 className="bg-blue-500 p-10 rounded-xl text-white text-4xl">
         Your main content
       </h1>
+      <p>Language: {state.language}</p>
     </div>
   );
 }
