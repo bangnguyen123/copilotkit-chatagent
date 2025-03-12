@@ -1,25 +1,29 @@
 # Requirements
-- Build a simple chatbot that can retrieve employee information
-- Tool: CopilotKit, Langgraph, OpenRouter, RagFlow
 
-# Tools:
-1. Copilotkit - NextJs
-    - https://www.copilotkit.ai/
-	- We have a running application and then we want to have a assistant or chatbot live inside of that -> here, we use Copilot
-	- If we already have agent (powerd by Langgraph) and want to turn it into a Co-Agent with our application -> we use CoAgents (LangGraph)
-2. Langgraph - FastAPI
-    -  https://www.langchain.com/langgraph
-	- Use this to build Agent
-3. RAGFlow
-    - https://ragflow.io/
-	- This is an Open-Source RAG (Retrieval-Augmented Generation) that helps us embed our data into its system
-	- Provide http api or python, typescript sdk for usage as a third-party
-4. OpenRouter
-    - https://openrouter.ai/
-	- A centralize hub for LLMs
-	- Go and By OpenRouter api key -> it is gonna handle the:
-		- Model Routing
-		- Balance between Price and Performance
+- Build a simple chatbot that can retrieve employee information.
+- Tools: CopilotKit, LangGraph, OpenRouter, RAGFlow.
+# Tools
+
+### 1. CopilotKit - Next.js
+
+- We have a running application and want to integrate an assistant or chatbot within it → Here, we use CopilotKit.
+- If we already have an agent powered by LangGraph and want to turn it into a Co-Agent within our application → We use CoAgents (LangGraph).
+
+### 2. LangGraph - FastAPI
+
+- Used to build the AI agent.
+
+### 3. RAGFlow
+
+- An open-source RAG (Retrieval-Augmented Generation) system that helps embed data.
+- Provides an HTTP API or SDKs for Python and TypeScript for third-party integration.
+
+### 4. OpenRouter
+
+- A centralized hub for LLMs.
+- Purchase an OpenRouter API key → Handles:
+    - Model routing.
+    - Balancing price and performance.
 
 # High Level-Architecture
 ```mermaid
@@ -53,20 +57,24 @@ graph LR;
 
 # Set-up
 
-1. OpenRouter
-	- Go and Buy credit -> Get the API_KEY
-2. RagFlow
-	- For macos, follow this link:
-		- https://ragflow.io/docs/dev/build_docker_image
-	- For others:
-		- https://github.com/infiniflow/ragflow, follow as usual
-	- Go to [http://127.0.0.1](http://127.0.0.1/), create an account then do the configuration:
-		- Embedding model
-		- Chat Model
-		- ....
-	- I tried to connect with OpenRouter and Ollama Embedding but it's failed -> So I bought OpenAI API key to work.
-    - Create new knowledge base -> Embeded the employee file -> Test retrive chunk
-3. ui
-	- Follow step in ./README.md
-4. agent
-	- Follow step in ./README.md
+### 1. OpenRouter
+
+- Purchase credits → Get an API key.
+
+### 2. RAGFlow
+
+- **For macOS:** Follow the instructions [here](https://ragflow.io/docs/dev/build_docker_image).
+- **For other OS:** Follow the setup guide in [this repository](https://github.com/infiniflow/ragflow).
+- Access RAGFlow at `http://127.0.0.1/`, create an account, and configure:
+    - Embedding model.
+    - Chat model.
+    - Other settings.
+- **Note:** I attempted to connect with OpenRouter and Ollama Embedding, but it failed. Instead, I purchased an OpenAI API key for integration.
+
+### 3. ui
+
+- Follow the steps in `ui/README.md`.
+
+### 4. agent
+
+- Follow the steps in `agent/README.md`.
