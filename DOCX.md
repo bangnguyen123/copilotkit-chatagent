@@ -61,7 +61,8 @@ graph LR;
 		- Chat Model
 		- ....
 	- I tried to connect with OpenRouter and Ollama Embedding but it's failed -> So I bought OpenAI API key to work.
-3. Frontend
-	- Follow step in ui/README.md
-4. Backend
-	- Follow step in agent/README.md
+    - Create new knowledge base -> Embeded the employee file -> Test retrive chunk
+3. ui
+	- Follow step in ./README.md
+4. agent
+	- Follow step in ./README.md
