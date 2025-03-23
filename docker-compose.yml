@@ -1,0 +1,34 @@
+services:
+  frontend:
+    image: chatagent_copilotkit
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: copilotkit
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    # restart: unless-stopped
+    pull_policy: never
+    working_dir: /ui
+    volumes:
+      - ./ui:/app
+    # volumes:
+    #   - ./ui:/app
+    command: ["pnpm", "start"]
+
+  backend:
+    image: chatagent_backend
+    build:
+      context: ./agent
+      dockerfile: Dockerfile
+    container_name: agent
+    ports:
+      - "8000:8000"
+    # environment:
+    #   - PYTHONUNBUFFERED=1
+    pull_policy: never
+    # volumes:
+    #   - ./agent:/app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

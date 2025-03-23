@@ -49,3 +49,10 @@ Navigate to [http://localhost:3000](http://localhost:3000).
 Run LangGraph studio, then load the `./agent` folder into it.
 
 Make sure to create the `.env` mentioned above first!
+
+```docker
+docker run -d --name backend --network agent-network --env-file ./agent/.env -p 8000:8000 chatagent_backend
+docker run -d --network agent-network --env-file ./ui/.env -p 3000:3000 chatagent_copilotkit
+docker compose -f docker-compose.yml up -d
+docker compose -f docker-compose.yml down -v
+```
