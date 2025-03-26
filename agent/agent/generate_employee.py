@@ -14,7 +14,7 @@ locations = ["HoChiMinh", "DaNang"]
 # Function to generate a random employee
 def generate_employee(employee_id):
     return {
-        "name": f"{random.choice(names).split()[0]} {random.choice(names).split()[1]}{employee_id:02d}",  # Unique name with ID
+        "name": f"{random.choice(names).split()[0]} {random.choice(names).split()[1]}",  # Unique name with ID
         "age": random.choice(ages),
         "role": random.choice(roles),
         "level": random.choice(levels),

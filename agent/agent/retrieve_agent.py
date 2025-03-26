@@ -8,8 +8,13 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from langgraph.prebuilt import ToolNode
 from copilotkit import CopilotKitState
-from ragflow_sdk import RAGFlow
 import os
+
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
+import chromadb
+
+
 from dotenv import load_dotenv
 load_dotenv() # pylint: disable=wrong-import-position
 
@@ -25,52 +30,35 @@ class AgentState(CopilotKitState):
 
 
 @tool
-def retrieve_chunks_from_ragflow(question: str):
-    """Retrieve imployee from ragflow
+def retrieve_employee(question: str):
+    """Retrieve imployee with skill and their from chroma
 
     Args:
         question: user question
     """
-    RAGFLOW_API_KEY = os.getenv("RAGFLOW_API_KEY")
-    BASE_URL = os.getenv("BASE_URL")
-    dataset_ids = ["1fa6807efdd811efb0fd0242c0a86b03"]  # Replace with your actual dataset ID
-    document_ids = ["d8345272fe9311efb2910242c0a86b06"]  # Replace with your actual document ID
-    rag_object = RAGFlow(api_key=RAGFLOW_API_KEY, base_url=BASE_URL)
     try:
-        # Call the RAGFlow retrieve method
-        chunks = rag_object.retrieve(
-            question=question,
-            dataset_ids=dataset_ids,
-            document_ids=document_ids,
-            page=1,  # You can change this if you want to paginate the results
-            page_size=5,  # Set the number of chunks to retrieve (adjust as needed)
-            similarity_threshold=0.2,  # Set the minimum similarity threshold
-            vector_similarity_weight=0.3,  # Adjust vector similarity weight if needed
-            top_k=1024,  # Set the number of chunks engaged in cosine similarity computation
-            keyword=False,  # Disable keyword-based matching
+        print(question)
+        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+        persistent_client = chromadb.PersistentClient()
+        vector_store_from_client = Chroma(
+            client=persistent_client,
+            collection_name="employees",
+            embedding_function=embeddings,
         )
-
-        # Return the list of chunks
-        chunk_dicts = [
-            {
-                "content": chunk.content,  # Adjust based on actual attribute names
-                "id": chunk.id,            # Include other relevant fields
-            }
-            for chunk in chunks
-        ]
-        return chunk_dicts
+        relevant_docs = vector_store_from_client.similarity_search(query=question, k=5)
+        context = "\n---\n".join(doc.page_content for doc in relevant_docs)
+        print(relevant_docs)
+        return context
 
     except Exception as e:
         print(f"Error occurred while retrieving chunks: {str(e)}")
         return None
 
-
-tools = [retrieve_chunks_from_ragflow]
-
+tools = [retrieve_employee]
 
 async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Literal["tool_node", "__end__"]]:
-    # 1. Define the model
     model = ChatOpenAI(
+            model="openai/gpt-4",
             openai_api_key=os.getenv("OPENROUTER_API_KEY"),  # Your OpenRouter API key
             openai_api_base="https://openrouter.ai/api/v1"  # OpenRouter API endpoint
         )
@@ -78,13 +66,8 @@ async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Litera
     model_with_tools = model.bind_tools(
         [
             *state["copilotkit"]["actions"],
-            # get_weather,
-            retrieve_chunks_from_ragflow
+            retrieve_employee
         ],
-
-        # 2.1 Disable parallel tool calls to avoid race conditions,
-        #     enable this for faster performance if you want to manage
-        #     the complexity of running tool calls in parallel.
         parallel_tool_calls=False,
     )
 

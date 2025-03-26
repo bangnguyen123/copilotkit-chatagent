@@ -20,7 +20,11 @@ dependencies = [
     "langchain-core",
     "langgraph-cli",
     "requests (>=2.32.3,<3.0.0)",
-    "ragflow-sdk (>=0.17.1,<0.18.0)"
+    "ragflow-sdk (>=0.17.1,<0.18.0)",
+    "beautifulsoup4 (>=4.13.3,<5.0.0)",
+    "chromadb (>=0.6.3,<0.7.0)",
+    "langchain-chroma (>=0.2.2,<0.3.0)",
+    "chroma (>=0.2.0,<0.3.0)"
 ]
 
 [build-system]
@@ -44,3 +48,6 @@ langgraph-cli = {extras = ["inmem"], version = "^0.1.64"}
 demo = "agent.demo:main"
 test = "agent.test:test"
 test_sdk = "agent.test_rag_python_sdk:main"
+
+[tool.setuptools.packages.find]
+exclude = ["chroma_store"]
