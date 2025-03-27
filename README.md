@@ -51,8 +51,24 @@ Run LangGraph studio, then load the `./agent` folder into it.
 Make sure to create the `.env` mentioned above first!
 
 ```docker
-docker run -d --name backend --network agent-network --env-file ./agent/.env -p 8000:8000 chatagent_backend
+docker build -t chatagent_backend .
+➜ docker buildx build \                                                                              
+  --platform linux/amd64,linux/arm64 \
+  -t bangnguyen781209/chatagent_backend:latest \
+  --push .
+docker pull bangnguyen781209/chatagent_backend:latest
+docker run -d --name backend --network agent-network --env-file ./backend/.env -p 8000:8000 chatagent_backend
+-------------------
+docker build -t chatagent_coplilot .
+➜ docker buildx build \                                                                              
+  --platform linux/amd64,linux/arm64 \
+  -t bangnguyen781209/chatagent_copilotkit:latest \
+  --push .
+docker pull bangnguyen781209/chatagent_copilotkit:latest
 docker run -d --network agent-network --env-file ./ui/.env -p 3000:3000 chatagent_copilotkit
 docker compose -f docker-compose.yml up -d
 docker compose -f docker-compose.yml down -v
+---------------------
+docker save -o chatagent_backend.tar chatagent_backend:latest
+docker save -o chatagent_copilot.tar chatagent_copilot:latest
 ```
