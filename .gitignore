@@ -3,4 +3,4 @@ ui/.env
 chatagent_backend.tar
 chatagent_copilotkit.tar
 agent/chroma/*
-ui/.DS_Store
+.DS_Store
