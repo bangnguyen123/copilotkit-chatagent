@@ -8,17 +8,23 @@ import chromadb
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 persistent_client = chromadb.PersistentClient()
+
+# Delete and recreate the collection
+persistent_client.delete_collection("employees")
+collection = persistent_client.create_collection("employees")
+
+# Now initialize Chroma AFTER the collection exists
 vector_store_from_client = Chroma(
     client=persistent_client,
     collection_name="employees",
     embedding_function=embeddings,
 )
-collection = persistent_client.get_or_create_collection("employees")
+
 # Load JSON file
 with open("employees.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Turn each structured entry into a full sentence (or paragraph)
+# Convert entries to documents
 documents = []
 for item in data:
     content = (
@@ -30,7 +36,7 @@ for item in data:
 
 print(f"Loaded {len(documents)} structured documents.")
 
-# Split the content into chunks (can be skipped if each entry is short)
+# Split content
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
     chunk_size=100,
     chunk_overlap=20
@@ -39,6 +45,6 @@ doc_splits = text_splitter.split_documents(documents)
 
 print(f"Generated {len(doc_splits)} text chunks for embedding.")
 
-# Embed and store (assuming you’ve set up your vector store with an embedding function)
+# Embed and store
 uuids = [str(uuid4()) for _ in range(len(doc_splits))]
 vector_store_from_client.add_documents(documents=doc_splits, ids=uuids)

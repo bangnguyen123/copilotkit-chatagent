@@ -1,6 +1,4 @@
 # test_retriever.py
-
-from agent.retrieve_agent import get_or_create_retriever
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma

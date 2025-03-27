@@ -48,6 +48,3 @@ langgraph-cli = {extras = ["inmem"], version = "^0.1.64"}
 demo = "agent.demo:main"
 test = "agent.test:test"
 test_sdk = "agent.test_rag_python_sdk:main"
-
-[tool.setuptools.packages.find]
-exclude = ["chroma_store"]

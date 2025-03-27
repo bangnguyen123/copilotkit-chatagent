@@ -14,10 +14,23 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 import chromadb
 
-
 from dotenv import load_dotenv
 load_dotenv() # pylint: disable=wrong-import-position
 
+
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-large"
+)
+persistent_client = chromadb.PersistentClient()
+vector_store_from_client = Chroma(
+    client=persistent_client,
+    collection_name="employees",
+    embedding_function=embeddings,
+)
+relevant_docs = vector_store_from_client.similarity_search(
+    query="How many senior devs?",
+    k=5  # adjust as needed
+)
 
 class AgentState(CopilotKitState):
     """
@@ -37,17 +50,8 @@ def retrieve_employee(question: str):
         question: user question
     """
     try:
-        print(question)
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        persistent_client = chromadb.PersistentClient()
-        vector_store_from_client = Chroma(
-            client=persistent_client,
-            collection_name="employees",
-            embedding_function=embeddings,
-        )
         relevant_docs = vector_store_from_client.similarity_search(query=question, k=5)
         context = "\n---\n".join(doc.page_content for doc in relevant_docs)
-        print(relevant_docs)
         return context
 
     except Exception as e:
