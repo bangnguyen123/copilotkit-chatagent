@@ -185,3 +185,47 @@ docker run -d --name backend --network agent-network --env-file ./backend/.env -
 ```sh
 docker run -d --network agent-network --env-file ./ui/.env -p 3000:3000 chatagent_copilotkit
 ```
+
+### 3.5 Setup nginx
+- Install nginx
+```sh
+sudo dnf install -y nginx
+```
+- Start nginx
+```sh
+sudo systemctl start nginx
+```
+- Enable nginx to start on boot
+```sh
+sudo systemctl enable nginx
+```
+- Check ngixn status
+```sh
+sudo systemctl status nginx
+```
+- Config reverse proxy: create nginx and config nginx file
+```
+sudo nano /etc/nginx/conf.d/agent.conf
+```
+
+```
+server {
+    listen 80;
+    server_name server_ip;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+- Reload nginx server
+```sh
+sudo systemctl restart nginx
+```
+
+Access to web using the server_ip
